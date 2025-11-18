@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+.accordion {
+  background-color: rgba(238, 238, 238, 0.5);
+  color: #444;
+  cursor: pointer;
+  padding: 18px;
+  width: 100%;
+  border: none;
+  text-align: left;
+  outline: none;
+  font-size: 15px;
+  transition: 0.4s;
+}
+
+.active, .accordion:hover {
+  background-color: #ccc; 
+}
+
+.panel {
+  padding: 0 18px;
+  display: none;
+  background-color: white;
+  overflow: hidden;
+}
+
+
+body {
+  background-image: url('https://thumbs.dreamstime.com/b/natural-wooden-blocks-printed-letters-forming-word-faq-light-desk-fresh-green-leaves-representing-questions-answers-405837266.jpg');
+        background-position: center;
+      background-repeat: no-repeat; 
+      background-size: cover; 
+}
+
+</style>
+</head>
+<body>
+
+<button class="accordion">Team Info ></button>
+<div class="panel">
+  <p>We are Student from SMKBJ.</p>
+</div>
+
+<button class="accordion">Team History ></button>
+<div class="panel">
+  <p>Our team start when one of our member joined a competition in Penang, Malaysia. Ever then our team has grown mature with more project idea and more member</p>
+</div>
+
+<button class="accordion">Membership ></button>
+<div class="panel">
+  <p>Membership is only available for SMKBJ student, For membership kindly email to <a href="mailto:eco.guardian2025@outlook.com">eco.guardian2025@outlook.com</a>.</p>
+</div>
+
+<button class="accordion">Product Information ></button>
+<div class="panel">
+  <p>Our product is specifically design to help farmers and the PERHILITAN to decrease the ammount of sick trees aiming for a better live for human and tree</p>
+</div>
+
+<button class="accordion">Product Price Range ></button>
+<div class="panel">
+  <p>We aim for our product to be lower than current market price for other simmilar product.</p>
+</div>
+
+
+<script>
+var acc = document.getElementsByClassName("accordion");
+var i;
+
+for (i = 0; i < acc.length; i++) {
+  acc[i].addEventListener("click", function() {
+    this.classList.toggle("active");
+    var panel = this.nextElementSibling;
+    if (panel.style.display === "block") {
+      panel.style.display = "none";
+    } else {
+      panel.style.display = "block";
+    }
+  });
+}
+</script>
+
+</body>
+</html>
