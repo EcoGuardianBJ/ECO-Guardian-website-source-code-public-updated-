@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ShopEase by Team Coding Chaos (Login, Shop, Admin)</title>
+  <style>
+    :root{--primary:#2F8F4A;--primary-2:#4CAF6A;--bg:#f4f6f8;--card:#fff;--muted:#6b7280}
+    [data-theme="dark"]{--bg:#0f1724;--card:#111827;--muted:#9ca3af}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter,Arial,Helvetica,sans-serif;background:var(--bg);color:var(--muted)}
+    .center{max-width:980px;margin:36px auto;padding:16px}
+    .card{background:var(--card);border-radius:10px;padding:16px;box-shadow:0 6px 20px rgba(2,6,23,0.08)}
+    h1,h2{color:var(--primary)}
+
+    /* Auth boxes */
+    .auth-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+    @media(max-width:800px){.auth-grid{grid-template-columns:1fr}}
+    input,select{width:100%;padding:10px;margin-top:8px;border-radius:8px;border:1px solid #e5e7eb}
+    button{background:var(--primary);color:#fff;padding:10px 14px;border:0;border-radius:8px;cursor:pointer}
+    a.link{color:var(--primary);cursor:pointer;text-decoration:underline}
+
+    /* Topbar */
+    .topbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+    .top-actions{display:flex;gap:8px;align-items:center}
+    .search{padding:8px;border-radius:8px;border:1px solid #e5e7eb;width:320px}
+
+    /* products */
+    .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-top:16px}
+    .product{background:var(--card);padding:12px;border-radius:10px;text-align:center;color:var(--muted)}
+    .product img{width:100%;height:140px;object-fit:cover;border-radius:8px}
+    .product h3{margin:8px 0;color:#111827}
+    .price{color:var(--primary);font-weight:700}
+    .row{display:flex;gap:8px;align-items:center}
+
+    /* admin modal */
+    .modal{position:fixed;inset:0;background:rgba(2,6,23,0.5);display:flex;align-items:center;justify-content:center}
+    .modal .card{width:520px}
+
+    footer{text-align:center;margin-top:32px;color:var(--muted)}
+
+    #productList {
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+  </style>
+</head>
+<body data-theme="light">
+  <div class="center">
+    <div class="card" id="authArea">
+      <div class="topbar">
+        <h1>ShopEase</h1>
+        <div class="top-actions">
+          <input id="themeToggle" type="checkbox" title="Dark mode" /> 🌓
+        </div>
+      </div>
+
+      <!-- Auth / Welcome area -->
+      <div id="authBoxes">
+        <div class="auth-grid">
+          <div class="card">
+            <h2>Login</h2>
+            <label>Email<input id="loginEmail" type="email" placeholder="you@example.com" /></label>
+            <label>Password<input id="loginPass" type="password" placeholder="password" /></label>
+            <button onclick="login()">Login</button>
+            <p style="margin-top:8px">No account? <a class="link" onclick="showSignup()">Sign up</a></p>
+          </div>
+
+          <div class="card">
+            <h2>Sign Up</h2>
+            <label>Full name<input id="signupName" type="text" placeholder="Your name" /></label>
+            <label>Email<input id="signupEmail" type="email" placeholder="you@example.com" /></label>
+            <label>Password<input id="signupPass" type="password" placeholder="password" /></label>
+            <button onclick="signup()">Create Account</button>
+            <p style="margin-top:8px">Already have account? <a class="link" onclick="showLogin()">Login</a></p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main shop (hidden until login) -->
+      <div id="shopArea" style="display:none">
+        <div class="topbar">
+          <div>
+            <strong id="welcomeUser">Welcome</strong>
+            <div style="font-size:13px;color:var(--muted)" id="userEmail"></div>
+          </div>
+          <div class="top-actions">
+            <input id="searchInput" class="search" placeholder="Search products..." oninput="renderProducts()" />
+            <button onclick="openAdmin()">Admin</button>
+            <button onclick="logout()">Logout</button>
+            <button onclick="toggleCart()">Cart (<span id="cartCount">0</span>)</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Products</h2>
+          <div class="grid" id="productGrid"></div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <div id="cartPanel" class="cart-panel" style="display:none">
+      <h3>Your Cart</h3>
+      <div id="cartItems"></div>
+      <div style="margin-top:12px" class="row">
+        <strong>Total:</strong><div style="flex:1"></div><strong id="cartTotal">RM0</strong>
+      </div>
+      <div style="margin-top:12px" class="row">
+        <button onclick="simulatePayment()">Pay (simulate)</button>
+        <button onclick="clearCart()" style="background:#e5e7eb;color:#111;margin-left:6px">Clear</button>
+      </div>
+    </div>
+
+    <footer>© 2025 ShopEase — Team Coding Chaos</footer>
+  </div>
+
+  <!-- Admin modal -->
+  <div id="adminModal" class="modal" style="display:none">
+    <div class="card">
+      <h2>Admin Panel</h2>
+      <p style="font-size:13px;color:var(--muted)">Protected by an admin password.</p>
+      <div id="adminAuth">
+        <label>Admin password<input id="adminPass" type="password" placeholder="enter admin pass" /></label>
+        <button onclick="authAdmin()">Enter</button>
+      </div>
+
+      <div id="adminControls" style="display:none;margin-top:12px">
+        <h3>Add / Edit Product</h3>
+        <label>Title<input id="pTitle" /></label>
+        <label>Price (RM)<input id="pPrice" type="number" /></label>
+        <label>Image URL<input id="pImage" placeholder="https://..." /></label>
+        <div style="margin-top:8px" class="row">
+          <button onclick="saveProduct()">Save</button>
+          <button onclick="closeAdmin()" style="background:#e5e7eb;color:#111;margin-left:6px">Close</button>
+        </div>
+        <hr style="margin:12px 0" />
+        <h3>Manage Products</h3>
+        <div id="adminList"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // --- Data & persistence ---
+    const SAMPLE_PRODUCTS = [
+      {id:1,title:'Product Code',price:70,image:'https://i.sstatic.net/4cymA.png'},
+      {id:2,title:'Product with Code installed',price:470,image:'https://placehold.co/400x300?text=Keyboard'},
+      {id:3,title:'Product witout code installed',price:400,image:'https://placehold.co/400x300?text=Headphones'},
+      {id:4,title:'Service',price:20,image:'https://placehold.co/400x300?text=Speaker'}
+    ];
+
+    // read/write storage helpers
+    function get(key, fallback) { try{ const v=localStorage.getItem(key); return v?JSON.parse(v):fallback }catch(e){return fallback} }
+    function set(key,val){ localStorage.setItem(key,JSON.stringify(val)); }
+
+    // initialize products & users
+    let products = get('shop_products', SAMPLE_PRODUCTS);
+    let users = get('shop_users', []); // array of {name,email,pass}
+    let session = get('shop_session', null); // {email}
+    let cart = get('shop_cart', []);
+
+    // reflect session
+    document.addEventListener('DOMContentLoaded',()=>{
+      const themeToggle = document.getElementById('themeToggle');
+      // dark mode toggle
+      const savedTheme = localStorage.getItem('shop_theme')||'light';
+      document.body.setAttribute('data-theme', savedTheme);
+      themeToggle.checked = savedTheme==='dark';
+      themeToggle.addEventListener('change',()=>{
+        const next = themeToggle.checked? 'dark':'light';
+        document.body.setAttribute('data-theme', next);
+        localStorage.setItem('shop_theme', next);
+      });
+
+      if(session){ // auto-login if session exists
+        loadHomepage(getUser(session.email));
+      }
+      renderProducts();
+      renderCartCount();
+    });
+
+    function getUser(email){ return users.find(u=>u.email===email) }
+
+    // --- Auth ---
+    function signup(){
+      const name=document.getElementById('signupName').value.trim();
+      const email=document.getElementById('signupEmail').value.trim();
+      const pass=document.getElementById('signupPass').value;
+      if(!name||!email||!pass){ alert('Fill all fields'); return }
+      if(getUser(email)){ alert('Email already registered'); return }
+      users.push({name,email,pass});
+      set('shop_users',users);
+      alert('Account created — please login');
+      showLogin();
+    }
+
+    function login(){
+      const email=document.getElementById('loginEmail').value.trim();
+      const pass=document.getElementById('loginPass').value;
+      const u=getUser(email);
+      if(!u || u.pass!==pass){ alert('Invalid credentials'); return }
+      session = {email:u.email}; set('shop_session',session);
+      loadHomepage(u);
+    }
+
+    function logout(){ session=null; localStorage.removeItem('shop_session'); document.getElementById('shopArea').style.display='none'; document.getElementById('authBoxes').style.display='block'; }
+
+    function showSignup(){ document.getElementById('authBoxes').style.display='block'; }
+    function showLogin(){ document.getElementById('authBoxes').style.display='block'; }
+
+    // --- Shop UI ---
+    function loadHomepage(user){
+      document.getElementById('authBoxes').style.display='none';
+      document.getElementById('shopArea').style.display='block';
+      document.getElementById('welcomeUser').innerText = `Hi, ${user.name}`;
+      document.getElementById('userEmail').innerText = user.email;
+      renderProducts();
+    }
+
+    function renderProducts(){
+      const grid=document.getElementById('productGrid'); grid.innerHTML='';
+      const q = document.getElementById('searchInput')?.value?.toLowerCase()||'';
+      products.filter(p=>p.title.toLowerCase().includes(q)).forEach(p=>{
+        const el=document.createElement('div'); el.className='product card';
+        el.innerHTML = `
+          <img src="${p.image}" alt="${p.title}" />
+          <h3>${p.title}</h3>
+          <div class='price'>RM ${p.price}</div>
+          <div style="margin-top:10px" class='row'>
+            <a href="https://youtube"><button>view</button></a>
+          </div>`;
+        grid.appendChild(el);
+      });
+    }
+
+
+
+
+    // --- Admin ---
+    const ADMIN_PASS = 'admin123'; // demo only
+    function openAdmin(){ document.getElementById('adminModal').style.display='flex'; document.getElementById('adminAuth').style.display='block'; document.getElementById('adminControls').style.display='none'; }
+    function closeAdmin(){ document.getElementById('adminModal').style.display='none'; }
+    function authAdmin(){ const p=document.getElementById('adminPass').value; if(p===ADMIN_PASS){ document.getElementById('adminAuth').style.display='none'; document.getElementById('adminControls').style.display='block'; renderAdminList(); } else alert('Wrong admin password'); }
+
+    function saveProduct(){ const idInput=document.getElementById('pId'); const id=idInput?Number(idInput.value):null; const title=document.getElementById('pTitle').value.trim(); const price=Number(document.getElementById('pPrice').value); const image=document.getElementById('pImage').value.trim()||'https://placehold.co/400x300'; if(!title||!price){ alert('Provide title and price'); return }
+      if(id){ const idx=products.findIndex(p=>p.id===id); products[idx]={id,title,price,image}; }
+      else{ const nid = products.length? Math.max(...products.map(p=>p.id))+1:1; products.push({id:nid,title,price,image}); }
+      set('shop_products',products); renderProducts(); renderAdminList(); alert('Saved');
+    }
+
+    function renderAdminList(){ const list=document.getElementById('adminList'); list.innerHTML=''; products.forEach(p=>{ const d=document.createElement('div'); d.style.borderBottom='1px solid #eee'; d.style.padding='8px 0'; d.innerHTML=`<strong>${p.title}</strong> — RM ${p.price} <div style='margin-top:6px'><button onclick='editProduct(${p.id})'>Edit</button> <button onclick='deleteProduct(${p.id})' style='background:#ef4444;margin-left:6px'>Delete</button></div>`; list.appendChild(d); }); }
+
+    function editProduct(id){ const p=products.find(x=>x.id===id); document.getElementById('pTitle').value=p.title; document.getElementById('pPrice').value=p.price; document.getElementById('pImage').value=p.image; // store id
+      let idInput=document.getElementById('pId'); if(!idInput){ idInput=document.createElement('input'); idInput.type='hidden'; idInput.id='pId'; document.getElementById('adminControls').appendChild(idInput); }
+      idInput.value = p.id;
+    }
+
+    function deleteProduct(id){ if(!confirm('Delete product?')) return; products = products.filter(p=>p.id!==id); set('shop_products',products); renderProducts(); renderAdminList(); }
+
+    // utilities
+    function set(k,v){ localStorage.setItem(k,JSON.stringify(v)); }
+    function get(k,def){ try{ const v=localStorage.getItem(k); return v?JSON.parse(v):def }catch(e){return def} }
+
+    // ensure products & cart local copy kept
+    // load saved state
+    (function(){ const saved = get('shop_products', null); if(saved) products = saved; const cartSaved = get('shop_cart', null); if(cartSaved) cart = cartSaved; const usersSaved = get('shop_users', null); if(usersSaved) users = usersSaved; const sess = get('shop_session', null); if(sess) session = sess; })();
+  </script>
+</body>
+</html>
