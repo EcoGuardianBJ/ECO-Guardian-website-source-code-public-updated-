@@ -1,87 +1,256 @@
-<!DOCTYPE html>
+<<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
+<head>
+<meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<!-- Premium Google Font -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
 <style>
+body {
+  background-image: url('https://thumbs.dreamstime.com/b/natural-wooden-blocks-printed-letters-forming-word-faq-light-desk-fresh-green-leaves-representing-questions-answers-405837266.jpg');
+  background-position: center;
+  background-size: cover;
+  font-family: "Poppins", sans-serif;
+  backdrop-filter: blur(6px);
+  padding: 20px;
+  transition: background 0.4s ease, color 0.4s ease;
+}
+
+/* DARK MODE BACKGROUND */
+body.dark {
+  background-image: url('https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1200&q=80');
+  color: #f2f2f2;
+}
+
+/* Container */
+.faq-container {
+  max-width: 800px;
+  margin: auto;
+  padding: 10px;
+}
+
+/* Theme Toggle Button */
+.theme-toggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 10px 18px;
+  background: rgba(255,255,255,0.4);
+  border: none;
+  border-radius: 50px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  backdrop-filter: blur(10px);
+  box-shadow: 0px 6px 18px rgba(0,0,0,0.2);
+  transition: all 0.3s ease;
+}
+
+body.dark .theme-toggle {
+  background: rgba(20,20,20,0.6);
+  color: #FFD700;
+  box-shadow: 0px 0px 20px rgba(255,215,0,0.5);
+}
+
+/* Accordion Button */
 .accordion {
-  background-color: rgba(238, 238, 238, 0.5);
-  color: #444;
+  background: rgba(255, 255, 255, 0.35);
+  color: #333;
   cursor: pointer;
   padding: 18px;
   width: 100%;
   border: none;
+  font-size: 16px;
   text-align: left;
-  outline: none;
-  font-size: 15px;
-  transition: 0.4s;
+  transition: all 0.4s ease;
+  border-radius: 10px;
+  margin-bottom: 12px;
+  position: relative;
+  box-shadow: 0px 8px 20px rgba(0,0,0,0.12);
+  backdrop-filter: blur(9px);
+  border: 1px solid rgba(255,255,255,0.5);
 }
 
-.active, .accordion:hover {
-  background-color: #ccc; 
+/* Dark mode accordion */
+body.dark .accordion {
+  background: rgba(0,0,0,0.45);
+  color: #f5f5f5;
+  border: 1px solid rgba(255,215,0,0.3);
+  box-shadow: 0px 0px 18px rgba(255,215,0,0.15);
 }
 
+.accordion:hover {
+  transform: translateY(-2px);
+  box-shadow: 0px 12px 28px rgba(255, 215, 0, 0.25);
+}
+
+/* Icons */
+.accordion:after {
+  content: '\002B';
+  font-size: 22px;
+  position: absolute;
+  right: 20px;
+  transition: 0.3s;
+}
+
+body.dark .accordion:after {
+  color: #FFD700;
+}
+
+.accordion.active:after {
+  content: '\2212';
+  transform: rotate(180deg);
+}
+
+/* The panel */
 .panel {
   padding: 0 18px;
-  display: none;
-  background-color: white;
+  max-height: 0;
   overflow: hidden;
+  background: rgba(255,255,255,0.65);
+  border-radius: 10px;
+  margin-top: -10px;
+  margin-bottom: 18px;
+  transition: max-height 0.35s ease;
+  backdrop-filter: blur(6px);
+  border-left: 3px solid #d4af37;
+  box-shadow: 0px 6px 14px rgba(0,0,0,0.15);
 }
 
-
-body {
-  background-image: url('https://thumbs.dreamstime.com/b/natural-wooden-blocks-printed-letters-forming-word-faq-light-desk-fresh-green-leaves-representing-questions-answers-405837266.jpg');
-        background-position: center;
-      background-repeat: no-repeat; 
-      background-size: cover; 
+/* Dark Mode panel */
+body.dark .panel {
+  background: rgba(10,10,10,0.6);
+  border-left: 3px solid #FFD700;
+  box-shadow: 0px 0px 12px rgba(255,215,0,0.15);
 }
 
+.panel p {
+  padding: 15px 5px;
+  line-height: 1.6;
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  .accordion {
+    font-size: 14px;
+    padding: 16px;
+  }
+  .panel p {
+    font-size: 14px;
+  }
+}
 </style>
 </head>
+
 <body>
 
-<button class="accordion">Team Info ></button>
+<button class="theme-toggle" onclick="toggleTheme()">🌙 Dark Mode</button>
+
+<div class="faq-container">
+
+<!-- FAQ SECTION START (same questions) -->
+
+<button class="accordion"> What is the SmartLeaf Health Detector?</button>
 <div class="panel">
-  <p>We are Student from SMKBJ.</p>
+  <p>SmartLeaf is an AI-powered system that uses the HuskyLens camera to analyze leaf images and detect signs of disease, stress, or nutrient deficiency.</p>
 </div>
 
-<button class="accordion">Team History ></button>
+<button class="accordion"> How does SmartLeaf detect leaf health?</button>
 <div class="panel">
-  <p>Our team start when one of our member joined a competition in Penang, Malaysia. Ever then our team has grown mature with more project idea and more member</p>
+  <p>The HuskyLens captures a leaf image and sends it to an AI model that checks for colour changes, patterns, and spots.</p>
 </div>
 
-<button class="accordion">Membership ></button>
+<button class="accordion"> What hardware does SmartLeaf use?</button>
 <div class="panel">
-  <p>Membership is only available for SMKBJ student, For membership kindly email to <a href="mailto:eco.guardian2025@outlook.com">eco.guardian2025@outlook.com</a>.</p>
+  <p>SmartLeaf uses HuskyLens as the vision sensor and a Raspberry Pi Zero 2 W to send results to a Telegram bot.</p>
 </div>
 
-<button class="accordion">Product Information ></button>
+<button class="accordion"> What does the Raspberry Pi do?</button>
 <div class="panel">
-  <p>Our product is specifically design to help farmers and the PERHILITAN to decrease the ammount of sick trees aiming for a better live for human and tree</p>
+  <p>It processes detection results and sends real-time alerts via WiFi.</p>
 </div>
 
-<button class="accordion">Product Price Range ></button>
+<button class="accordion"> Why use AI instead of human observation?</button>
 <div class="panel">
-  <p>We aim for our product to be lower than current market price for other simmilar product.</p>
+  <p>AI can detect small changes that humans miss, helping early diagnosis.</p>
 </div>
 
+<button class="accordion"> What is the main purpose of SmartLeaf?</button>
+<div class="panel">
+  <p>It helps farmers, environmental officers, PERHILITAN, and students monitor plant health efficiently.</p>
+</div>
+
+<button class="accordion"> Can I buy SmartLeaf?</button>
+<div class="panel">
+  <p>Yes! You can purchase SmartLeaf directly from our team soon.</p>
+</div>
+
+<button class="accordion"> Where can I get the components?</button>
+<div class="panel">
+  <p>The full SmartLeaf kit will be sold through our official order platform.</p>
+</div>
+
+<button class="accordion"> Is SmartLeaf customizable?</button>
+<div class="panel">
+  <p>Yes. We support custom AI models for farms and plantations.</p>
+</div>
+
+<button class="accordion"> Is it suitable for school usage?</button>
+<div class="panel">
+  <p>Yes, SmartLeaf is perfect for STEM, Biology, and Geography projects.</p>
+</div>
+
+<button class="accordion"> Does SmartLeaf need internet?</button>
+<div class="panel">
+  <p>Only if you want Telegram alerts. AI detection works offline.</p>
+</div>
+
+<button class="accordion"> Can it run in the forest?</button>
+<div class="panel">
+  <p>Yes. It works offline and uploads data when WiFi is available.</p>
+</div>
+
+<button class="accordion"> Will more sensors be added?</button>
+<div class="panel">
+  <p>Future versions may add air quality, humidity, and soil sensors.</p>
+</div>
+
+<!-- FAQ SECTION END -->
+
+</div>
 
 <script>
+// Accordion animation
 var acc = document.getElementsByClassName("accordion");
-var i;
-
-for (i = 0; i < acc.length; i++) {
+for (let i = 0; i < acc.length; i++) {
   acc[i].addEventListener("click", function() {
     this.classList.toggle("active");
+
     var panel = this.nextElementSibling;
-    if (panel.style.display === "block") {
-      panel.style.display = "none";
+    if (panel.style.maxHeight) {
+      panel.style.maxHeight = null;
     } else {
-      panel.style.display = "block";
+      panel.style.maxHeight = panel.scrollHeight + "px";
     }
   });
+}
+
+// Dark Mode Toggle
+function toggleTheme() {
+  document.body.classList.toggle("dark");
+
+  const btn = document.querySelector('.theme-toggle');
+  if (document.body.classList.contains("dark")) {
+    btn.textContent = "☀ Light Mode";
+  } else {
+    btn.textContent = "🌙 Dark Mode";
+  }
 }
 </script>
 
 </body>
+</html>
+
 </html>
